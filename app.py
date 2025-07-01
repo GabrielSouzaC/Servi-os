@@ -3,43 +3,44 @@ import streamlit as st
 import plotly.express as px
 
 st.set_page_config(
-    page_title="Dashboard de Pedidos",     
-    page_icon="📊",                        
-    layout="wide"                          
+    page_title="Dashboard de Pedidos",
+    page_icon="📊",
+    layout="wide"
 )
-# Dados fornecidos
-total_pedidos = {
-    "Mogi Alpha": 14,
-    "Indaiatuba": 8,
-    "São Carlos": 2,
-    "Total": 24,
-    "Total Bidu": 19
+
+# Dados de maio
+dados_maio = {
+    "Unidade": ["Mogi Alpha", "Indaiatuba", "São Carlos", "Total", "Total Bidu"],
+    "Maio - Serviços Agendados": [165, 82, 24, 24, 19],
+    "Maio - Total Perdidos": [14, 8, 2, 24, 19]
 }
 
-servicos_agendados = {
-    "Mogi Alpha": 165,
-    "Indaiatuba": 82,
-    "São Carlos": 24,
-    "Total": 24,
-    "Total Bidu": 19
+# Dados de junho (print)
+dados_junho = {
+    "Unidade": ["Mogi Alpha", "Indaiatuba", "São Carlos", "Total", "Total Bidu"],
+    "Junho - Serviços Agendados": [111, 58, 15, 184, 184],
+    "Junho - Total Perdidos": [18, 14, 1, 33, 14]
 }
 
-# Filtrar apenas as unidades (sem "Total" e "Total Bidu")
-unidades = ["Mogi Alpha", "Indaiatuba", "São Carlos"]
+# Criar DataFrames
+df_maio = pd.DataFrame(dados_maio)
+df_junho = pd.DataFrame(dados_junho)
 
-# Criar DataFrame
-df = pd.DataFrame({
-    "Unidade": unidades,
-    "Total de Pedidos": [total_pedidos[unidade] for unidade in unidades],
-    "Serviços Agendados": [servicos_agendados[unidade] for unidade in unidades]
-})
+# Mesclar horizontalmente
+df = pd.merge(df_maio, df_junho, on="Unidade")
 
-# Converter de wide para long para facilitar o gráfico de barras agrupadas
-df_melted = df.melt(id_vars="Unidade", var_name="Tipo", value_name="Quantidade")
+# Transformar para formato longo
+df_melted = df.melt(id_vars="Unidade", var_name="Categoria", value_name="Quantidade")
 
 # Criar gráfico
-fig = px.bar(df_melted, x="Unidade", y="Quantidade", color="Tipo", barmode="group",
-             title="Total de Pedidos vs Serviços Agendados por Unidade")
+fig = px.bar(
+    df_melted,
+    x="Unidade",
+    y="Quantidade",
+    color="Categoria",
+    barmode="group",
+    title="Comparativo de Pedidos Perdidos e Serviços Agendados - Maio x Junho"
+)
 
 # Mostrar no Streamlit
 st.plotly_chart(fig)
