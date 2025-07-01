@@ -29,42 +29,44 @@ df_junho = pd.DataFrame(dados_junho)
 # Unir os dados
 df = pd.merge(df_maio, df_junho, on="Unidade")
 
-# Reestruturar para gráfico de serviços agendados
+# GRÁFICO 1 - SERVIÇOS AGENDADOS
 df_agendados = df[["Unidade", "Serviços Agendados - Maio", "Serviços Agendados - Junho"]].set_index("Unidade").reset_index()
 df_agendados_melt = df_agendados.melt(id_vars="Unidade", var_name="Mês", value_name="Quantidade")
 
-# Gráfico de serviços agendados
 fig_agendados = px.line(
     df_agendados_melt,
     x="Unidade",
     y="Quantidade",
     color="Mês",
     markers=True,
+    text="Quantidade",
     title="📈 Comparativo - Serviços Agendados (Maio x Junho)",
     color_discrete_map={
-        "Serviços Agendados - Maio": "#1f77b4",  # azul
-        "Serviços Agendados - Junho": "#2ca02c"  # verde
+        "Serviços Agendados - Maio": "#1f77b4",
+        "Serviços Agendados - Junho": "#2ca02c"
     }
 )
+fig_agendados.update_traces(textposition="top center")
 
-# Reestruturar para gráfico de pedidos perdidos
+st.plotly_chart(fig_agendados)
+
+# GRÁFICO 2 - PEDIDOS PERDIDOS
 df_perdidos = df[["Unidade", "Total Perdidos - Maio", "Total Perdidos - Junho"]].set_index("Unidade").reset_index()
 df_perdidos_melt = df_perdidos.melt(id_vars="Unidade", var_name="Mês", value_name="Quantidade")
 
-# Gráfico de pedidos perdidos
 fig_perdidos = px.line(
     df_perdidos_melt,
     x="Unidade",
     y="Quantidade",
     color="Mês",
     markers=True,
+    text="Quantidade",
     title="📉 Comparativo - Pedidos Perdidos (Maio x Junho)",
     color_discrete_map={
-        "Total Perdidos - Maio": "#1f77b4",  # laranja
-        "Total Perdidos - Junho": "#2ca02c"  # vermelho
+        "Total Perdidos - Maio": "#ff7f0e",
+        "Total Perdidos - Junho": "#d62728"
     }
 )
+fig_perdidos.update_traces(textposition="top center")
 
-# Mostrar no Streamlit
-st.plotly_chart(fig_agendados)
 st.plotly_chart(fig_perdidos)
