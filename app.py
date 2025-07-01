@@ -15,7 +15,7 @@ dados_maio = {
     "Maio - Total Perdidos": [14, 8, 2, 24, 19]
 }
 
-# Dados de junho (print)
+# Dados de junho 
 dados_junho = {
     "Unidade": ["Mogi Alpha", "Indaiatuba", "São Carlos", "Total", "Total Bidu"],
     "Junho - Serviços Agendados": [111, 58, 15, 184, 184],
